@@ -14,30 +14,17 @@ class App:
         self.deletesahifa = Window_Delete()
         self.dbase = Database()
 
-
-        self.Show_Contacts()
-
         self.asosiysahifa.show()
+
+        # Connect buttons to corresponding functions
         self.asosiysahifa.add_new_contact_btn.clicked.connect(self.add_func)
         self.asosiysahifa.delete_contact_btn.clicked.connect(self.delete_func)
-
-
-    def Show_Contacts(self):
-            data=self.dbase.GET_ALL_CONTACTS()
-            print("<<<             Contacts             >>>")
-            print("Name" + " "*(24-len("Name")) + "Number")
-
-            for i in data:
-                print(i[0] + " "*(24-len(i[0])) + i[1])
-
-
-          
 
     def add_func(self):
         self.saqlashsahifa.show()
         self.asosiysahifa.close()
 
-      
+        # Disconnect existing connections before connecting to avoid multiple triggers
         try:
             self.saqlashsahifa.save_new_contact_btn.clicked.disconnect()
         except:
@@ -62,8 +49,6 @@ class App:
                 self.show_message(self.saqlashsahifa, "Contact mavjud")
             else:
                 self.show_message(self.saqlashsahifa, "Contact saqlandi")
-                self.Show_Contacts()
-
                 self.saqlashsahifa.name_input.clear()
                 self.saqlashsahifa.number_input.clear()
                 
@@ -94,15 +79,12 @@ class App:
 
         try:
             result = self.dbase.DELETE_CONTACT(name)
-            if result != 1:
+            if result == 1:
                 self.show_message(self.deletesahifa, "Contact o'chirildi")
-                self.deletesahifa.name_input.clear()
-                self.Show_Contacts()
-
             else:
                 self.show_message(self.deletesahifa, "Contact topilmadi")
 
-            
+            # Show the main window and close the delete window
             self.asosiysahifa.show()
             self.deletesahifa.close()
 
@@ -114,8 +96,6 @@ class App:
         msbox = QMessageBox(parent)
         msbox.setText(text)
         msbox.exec()
-
-
 
 app = QApplication([])
 main = App()

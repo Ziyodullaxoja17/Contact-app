@@ -31,12 +31,23 @@ class Database:
 
      def INSERT_NEW_CONTACT(self , name , number):
           try:
-               self.kursor.execute("INSERT INTO CONTACTS VALUES (%s , %s);",(name , number))
-               self.data_base.commit()
-               print(Fore.GREEN + "$ CONTACT YARATILDI ")
-          except:
+               self.kursor.execute("SELECT * FROM CONTACTS WHERE NAME = %s OR NUMBER_CONTACT = %s;",(name, number))
+               if self.kursor.fetchone() :
+                    
+                    print(Fore.RED + "ERROR : Bunday kontakt mavjud")
+                    return 1
+               
+               else :
+                    self.kursor.execute("INSERT INTO CONTACTS VALUES (%s , %s);",(name , number))
+                    self.data_base.commit()
+                    print(Fore.GREEN + "$ CONTACT YARATILDI ")
+
+          except :
                print(Fore.RED + "ERROR")
                return 1
+     
+     
+          
      
      def DELETE_CONTACT (self , name):
           try:
@@ -51,6 +62,8 @@ class Database:
           try:
                self.kursor.execute("SELECT * FROM CONTACTS;")
                data_contact=self.kursor.fetchall()
+               data_contact=list(data_contact)
+               
                return data_contact 
           except:
                print(Fore.RED + "ERROR")
